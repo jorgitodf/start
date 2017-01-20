@@ -24,6 +24,17 @@ class Route {
 	return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
     }
     
+    private function getRequest() {
+        $obj = new \stdClass;
+        foreach ($_GET as $key => $value) {
+            $obj->get->$key = $value;
+        }
+        foreach ($_POST as $key => $value) {
+            $obj->post->$key = $value;
+        }
+        return $obj;
+    }
+    
     private function run() {
         $url = $this->getUrl();
         $urlArray = explode('/', $url);
@@ -42,15 +53,26 @@ class Route {
                 $encontrada = true;
                 $controller = $route[1];
                 $acao = $route[2];
-                echo $route[0].'<br>';
-                echo $route[1].'<br>';
-                echo $route[2].'<br>';
-                echo $param[0].'<br>';
                 break;
             }
         }
         if ($encontrada) {
-            
+            $controller = Container::newController($controller);
+            switch(count($param)) {
+                case 1:
+                    $controller->$acao($param[0], $this->getRequest());
+                    break;
+                case 2:
+                    $controller->$acao($param[0], $param[1], $this->getRequest());
+                    break;
+                case 3:
+                    $controller->$acao($param[0], $param[1], $param[2], $this->getRequest());
+                    break;
+                default:
+                    $controller->$acao($this->getRequest());
+            }
+        } else {
+            echo "Página Não Encontrada... Erro 404...";
         }
     }
     
