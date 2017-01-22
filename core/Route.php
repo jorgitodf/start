@@ -72,7 +72,7 @@ class Route {
                     $controller->$acao($this->getRequest());
             }
         } else {
-            echo "Página Não Encontrada... Erro 404...";
+            Container::pageNotFound();
         }
     }
     

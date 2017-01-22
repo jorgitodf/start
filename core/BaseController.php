@@ -9,7 +9,7 @@ abstract class BaseController {
     private $layoutPath;
     private $pageTitle = null;
     
-    function __construct() {
+    public function __construct() {
         $this->view = new \stdClass;
     }
     
