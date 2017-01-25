@@ -4,33 +4,34 @@ namespace Core;
 
 use PDO;
 use PDOException;
+use App\IDataBaseInfo;
+use Core\Container;
 
-class DataBase {
+class DataBase implements IDataBaseInfo {
     
+    private static $driver = IDataBaseInfo::DRIVER;
+    private static $host = IDataBaseInfo::HOST;
+    private static $db = IDataBaseInfo::DBNAME;
+    private static $user = IDataBaseInfo::UNAME;
+    private static $pass = IDataBaseInfo::PASSW;
+    private static $charset = IDataBaseInfo::CHARSET;
+    private static $collation = IDataBaseInfo::COLLATION;
+
     public static function getDataBase() {
-        $conf = include_once __DIR__ . "/../app/database.php";
-        if ($conf['driver'] = 'mysql') {
-            $host = $conf['mysql']['host'];
-            $db = $conf['mysql']['database'];
-            $user = $conf['mysql']['user'];
-            $pass = $conf['mysql']['pass'];
-            $charset = $conf['mysql']['charset'];
-            $collation = $conf['mysql']['collation'];
+        if (self::$driver == 'mysql') {
             try {
-                $pdo = new PDO("mysql:dbname=$db;host=$host;charset=$charset", $user, $pass);
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                    $pdo->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES '$charset' COLLATE '$collation'");
-                    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);       
+                $pdo = new PDO('mysql:dbname='.self::$db.';host='.self::$host.';charset='.self::$charset.'', self::$user, self::$pass);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $pdo->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES '.self::$charset.' COLLATE '.self::$collation.'');
+                $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);       
                 return $pdo;
             } catch (PDOException $exc) {
-                if ($exc->getCode() == 1049) {
-                    echo "<h3>O Banco de Dados <b>test</b> não Existe... </h3><br/>";
-                } elseif ($exc->getCode() == 1045) {
-                    echo "<h3>O Usuário ou a Senha do Banco de Dados não Confere(m)...</h3><br/>";
-                }
-                echo $exc->getMessage();    
-            } 
+                echo Container::verificaErroDataBaseConnection($exc->getCode());
+                exit;
+                //echo $exc->getMessage();    
+            }
         }
     }
+
 
 }

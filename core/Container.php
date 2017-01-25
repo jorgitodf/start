@@ -21,4 +21,13 @@ class Container {
             echo "<h1>Erro 404: O Arquivo da Page Not Found</h1>";
         }
     }
+    
+    public static function verificaErroDataBaseConnection($code) {
+        if ($code == 1049) {
+            $msgErro = "<h3>O Banco de Dados <b>test</b> não Existe... </h3><br/>";
+        } elseif ($code == 1045) {
+            $msgErro = "<h3>O Usuário ou a Senha do Banco de Dados não Confere(m)...</h3><br/>";
+        }
+        return $msgErro;
+    }
 }

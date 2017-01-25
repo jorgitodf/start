@@ -3,12 +3,20 @@
 namespace App\Controllers;
 
 use Core\BaseController;
+use Core\Container;
 
 class HomeController extends BaseController {
     
-    public function index() {
+    private $modelUsuario;
+    
+    public function __construct() {
+        parent::__construct();
+        $this->modelUsuario = Container::getModel("Usuario");
+    }
+    
+    public function index($request) {
         $this->setPageTitle('Home');
-        $this->view->nome = "Jorgito da Silva Paiva";
         $this->renderView('home/index', 'layout');
+    
     }
 }

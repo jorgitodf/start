@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use stdClass;
+
 class Route {
     
     private $routes;
@@ -25,7 +27,7 @@ class Route {
     }
     
     private function getRequest() {
-        $obj = new \stdClass;
+        $obj = new stdClass;
         foreach ($_GET as $key => $value) {
             $obj->get->$key = $value;
         }

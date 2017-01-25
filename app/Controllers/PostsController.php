@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Core\BaseController;
 use Core\Container;
+use Core\Redirect;
 
 class PostsController extends BaseController {
     
@@ -28,6 +29,20 @@ class PostsController extends BaseController {
         }
     }
     
+    public function create() {
+        $this->setPageTitle('Novo Post');
+        $this->renderView('post/create', 'layout');
+    }
+    
+    public function store($request) {
+        $data = ['title'=>$request->post->title, 'content'=>$request->post->content];
+        if ($this->modelPost->salvar($data)) {
+            Redirect::route('/posts');
+        } else {
+            echo "Erro ao salvar os dados";
+        }
+        
+    }
     
     /* public function show($id, $request) {
         echo $id . '<br>';
