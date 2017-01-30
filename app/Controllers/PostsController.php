@@ -44,6 +44,14 @@ class PostsController extends BaseController {
         
     }
     
+    public function delete($id) {
+        if ($this->post->delete($id)) {
+            Redirect::route('/posts');
+        } else {
+            echo "Erro ao Excluir os dados";
+        }
+    }
+    
     /* public function show($id, $request) {
         echo $id . '<br>';
         echo $request->get->nome.'<br>';

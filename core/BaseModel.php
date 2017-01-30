@@ -57,13 +57,14 @@ abstract class BaseModel implements InterfaceDataBase {
     
     public function update(array $dados, $id) {
         $data = $this->prepareDataUpdate($dados);
-        $query = "UPDATE {$this->table} SET {$data[0]} WHERE id=:id";
+        $query = "UPDATE {$this->table} SET {$data[0]} WHERE id = :id";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(":id", $id);
         for ($i = 0; $i < count($data[1]); $i++) {
             $stmt->bindValue("{$data[1][$i]}", $data[2][$i]);
         }
         $result = $stmt->execute();
+        $stmt->closeCursor();
         return $result;
     }
 
@@ -78,6 +79,15 @@ abstract class BaseModel implements InterfaceDataBase {
         }
         $strKeysBinds = substr($strKeysBinds, 1);
         return [$strKeysBinds, $binds, $values];
+    }
+    
+    public function delete($id) {
+        $query = "DELETE FROM {$this->table} WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(":id", $id);
+        $result = $stmt->execute();
+        $stmt->closeCursor(); 
+        return $result;
     }
     
 }
